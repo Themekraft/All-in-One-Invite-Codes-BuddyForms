@@ -137,6 +137,17 @@ function all_in_one_invite_codes_buddyforms_create_new_form_builder_form_element
 			$form_fields['general']['slug'] = new Element_Hidden( "buddyforms_options[form_fields][" . $field_id . "][slug]", 'invite_codes' );
 			$form_fields['general']['type'] = new Element_Hidden( "buddyforms_options[form_fields][" . $field_id . "][type]", $field_type );
 
+
+			$invite_code_permission_options['code_settings'] = 'Use the invite code settings';
+			if ( $buddyforms[ $form_slug ]['form_type'] == 'post' || $buddyforms[ $form_slug ]['form_type'] == 'registration' ) {
+				$invite_code_permission_options['code_owner_can_edit'] = 'Code Owner Can Edit';
+			}
+
+			$invite_code_permission_options['set_to_used'] = 'Overwrite code settings and set the invite code to used after first Submission';
+
+
+			$invite_code_permission                           = isset( $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['invite_code_permission'] ) ? $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['invite_code_permission'] : 'any';
+			$form_fields['general']['invite_code_permission'] = new Element_Select( 'Invite Code Permission', "buddyforms_options[form_fields][" . $field_id . "][invite_code_permission]", $invite_code_permission_options, array( 'value' => $invite_code_permission ) );
 			break;
 
 	}
@@ -208,16 +219,41 @@ function all_in_one_invite_codes_buddyforms_server_validation( $valid, $form_slu
 
 		$result = all_in_one_invite_codes_validate_code( $_POST[ $form_field['slug'] ], $_POST[ $form_field['user_mail'] ] );
 
-		if ( isset( $result['error'] ) ) {;
+		if ( isset( $result['error'] ) ) {
+			;
 			Form::setError( 'buddyforms_form_' . $form_slug, $result['error'], $form_field['name'] );
+
 			return false;
 		}
 
 
 	}
+
 	return true;
 }
 
 
+add_action( 'buddyforms_process_submission_end', 'all_in_one_invite_codes_buddyforms_process_submission_end', 1, 10 );
 
+function all_in_one_invite_codes_buddyforms_process_submission_end( $args ) {
+	if ( isset( $args['user_id'] ) ) {
+
+		get_user_meta( $args['user_id'], 'tk_all_in_one_invite_code', true );
+
+
+		//all_in_one_invite_codes_set_status('used');
+	}
+}
+
+
+add_filter( 'all_in_one_invite_codes_options_type_options', 'all_in_one_invite_codes_buddyforms_options_type_options' );
+
+function all_in_one_invite_codes_buddyforms_options_type_options( $options ) {
+
+	$options['buddyforms_registration'] = 'After BuddyForms Registration is complete';
+	$options['buddyforms_post']         = 'After BuddyForms Post Submission is complete';
+
+	return $options;
+
+}
 
