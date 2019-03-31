@@ -238,16 +238,16 @@ add_action( 'buddyforms_process_submission_end', 'all_in_one_invite_codes_buddyf
 function all_in_one_invite_codes_buddyforms_process_submission_end( $args ) {
 	if ( isset( $args['user_id'] ) ) {
 
-		get_user_meta( $args['user_id'], 'tk_all_in_one_invite_code', true );
+		if ( isset( $_POST['tk_invite_code'] ) ) {
+			$code_id = all_in_one_invite_codes_get_code_id_by_code($_POST['tk_invite_code']);
+			all_in_one_invite_codes_set_status($code_id,'used');
+		}
 
-
-		//all_in_one_invite_codes_set_status('used');
 	}
 }
 
 
 add_filter( 'all_in_one_invite_codes_options_type_options', 'all_in_one_invite_codes_buddyforms_options_type_options' );
-
 function all_in_one_invite_codes_buddyforms_options_type_options( $options ) {
 
 	$options['buddyforms_registration'] = 'After BuddyForms Registration is complete';
