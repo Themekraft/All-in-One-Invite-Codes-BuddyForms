@@ -183,7 +183,7 @@ function all_in_one_invite_codes_buddyforms_members_add_form_element_to_select( 
 	global $post;
 
 	if ( $post->post_type != 'buddyforms' ) {
-		return;
+		return $elements_select_options;
 	}
 
 	$elements_select_options['buddyforms']['label']                  = 'Invite Codes';
@@ -208,16 +208,15 @@ function all_in_one_invite_codes_buddyforms_server_validation( $valid, $form_slu
 
 		$result = all_in_one_invite_codes_validate_code( $_POST[ $form_field['slug'] ], $_POST[ $form_field['user_mail'] ] );
 
-		if ( isset( $result['error'] ) ) {;
+		if ( isset( $result['error'] ) ) {
+			;
 			Form::setError( 'buddyforms_form_' . $form_slug, $result['error'], $form_field['name'] );
+
 			return false;
 		}
 
 
 	}
+
 	return true;
 }
-
-
-
-
