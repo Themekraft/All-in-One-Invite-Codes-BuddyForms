@@ -46,24 +46,28 @@ if ( ! function_exists( 'bfe_fs' ) ) {
 			}
 
 			$bfe_fs = fs_dynamic_init( array(
-				'id'               => '3325',
-				'slug'             => 'all-in-one-invite-codes-buddyforms',
-				'premium_slug'     => 'all-in-one-invite-codes-buddyforms-premium',
-				'type'             => 'plugin',
-				'public_key'       => 'pk_2e932fa681295bbf58137fa222313',
-				'is_premium'       => false,
-				'has_paid_plans'   => false,
-				'is_org_compliant' => false,
-				'parent'           => array(
+				'id'                  => '3325',
+				'slug'                => 'all-in-one-invite-codes-buddyforms',
+				'premium_slug'        => 'buddyforms-form-element-premium',
+				'type'                => 'plugin',
+				'public_key'          => 'pk_2e932fa681295bbf58137fa222313',
+				'is_premium'          => true,
+				'is_premium_only'     => true,
+				'has_paid_plans'      => true,
+				'is_org_compliant'    => false,
+				'trial'               => array(
+					'days'               => 7,
+					'is_require_payment' => true,
+				),
+				'parent'              => array(
 					'id'         => '3322',
 					'slug'       => 'all-in-one-invite-codes',
 					'public_key' => 'pk_955be38b0c4d2a2914a9f4bc98355',
 					'name'       => 'All in One Invite Codes',
 				),
-				'menu'             => array(
-					'account' => false,
-					'support' => false,
-				),
+				'menu'                => array(
+					'support'        => false,
+				)
 			) );
 		}
 
