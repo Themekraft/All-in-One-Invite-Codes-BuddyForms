@@ -210,11 +210,13 @@ function all_in_one_invite_codes_buddyforms_server_validation( $valid, $form_slu
 	$form_field = buddyforms_get_form_field_by_slug( $form_slug, 'invite_codes' );
 	if ( $form_field ) {
 
-		$result = all_in_one_invite_codes_validate_code( $_POST[ $form_field['slug'] ], $_POST[ $form_field['user_mail'] ] );
+		$result = all_in_one_invite_codes_validate_code( $_POST[ $form_field['slug'] ], $_POST[ $form_field['user_mail'] ] ,'register');
 
 		if ( isset( $result['error'] ) ) {
-			;
-			Form::setError( 'buddyforms_form_' . $form_slug, $result['error'], $form_field['name'] );
+
+			//Form::setError( 'buddyforms_form_' . $form_slug, $result['error'], $form_field['name'] );
+            $global_error = ErrorHandler::get_instance();
+            $global_error->add_error( new BuddyForms_Error( 'buddyforms_form_' . $form_slug, $result['error'], 'invite_codes', $form_slug ) );
 
 			return false;
 		}
