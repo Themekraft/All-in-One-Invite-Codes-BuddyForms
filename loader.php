@@ -2,14 +2,14 @@
 
 /**
  * Plugin Name: All in One Invite Codes BuddyForms
- * Plugin URI:  https://themekraft.com/all-in-one-invite-codes/
+ * Plugin URI:  https://themekraft.com/products/all-in-one-invite-codes-buddyforms/
  * Description: Create Invite only Forms
  * Version: 1.0
  * Author: ThemeKraft
  * Author URI: https://themekraft.com/
  * Licence: GPLv3
  * Network: false
- * Text Domain: all-in-one-invite-codes
+ * Text Domain: all-in-one-invite-codes-buddyforms
  *
  * ****************************************************************************
  *
@@ -30,6 +30,9 @@
  ****************************************************************************
  */
 
+ function load_plugin_textdomain() {
+    load_plugin_textdomain( 'all_in_one_invite_codes-buddyforms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}
 if ( ! function_exists( 'bfe_fs' ) ) {
 	// Create a helper function for easy SDK access.
 	function bfe_fs() {
@@ -135,8 +138,8 @@ function all_in_one_invite_codes_buddyforms_create_new_form_builder_form_element
 
 			unset( $form_fields );
 
-			$name                           = isset( $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['name'] ) ? $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['name'] : 'Invite Codes';
-			$form_fields['general']['name'] = new Element_Textbox( '<b>' . __( 'Name', 'buddyforms' ) . '</b>', "buddyforms_options[form_fields][" . $field_id . "][name]", array( 'value' => $name ) );
+			$name                           = isset( $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['name'] ) ? $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['name'] : __('Invite Codes','all-in-one-invite-codes-buddyforms');
+			$form_fields['general']['name'] = new Element_Textbox( '<b>' . __( 'Name', 'all-in-one-invite-codes-buddyforms' ) . '</b>', "buddyforms_options[form_fields][" . $field_id . "][name]", array( 'value' => $name ) );
 
 			$form_fields['general']['slug'] = new Element_Hidden( "buddyforms_options[form_fields][" . $field_id . "][slug]", 'invite_codes' );
 			$form_fields['general']['type'] = new Element_Hidden( "buddyforms_options[form_fields][" . $field_id . "][type]", $field_type );
