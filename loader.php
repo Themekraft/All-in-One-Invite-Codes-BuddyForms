@@ -10,6 +10,7 @@
  * Licence: GPLv3
  * Network: false
  * Text Domain: all-in-one-invite-codes-buddyforms
+ * Domain Path: /languages
  *
  * ****************************************************************************
  *
@@ -30,9 +31,13 @@
  ****************************************************************************
  */
 
- function load_plugin_textdomain() {
-    load_plugin_textdomain( 'all_in_one_invite_codes-buddyforms', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+
+function aioic_buddyforms_load_plugin_textdomain() {
+	load_plugin_textdomain( 'all_in_one_invite_codes-buddyforms', false, basename( dirname( __FILE__ ) ) . '/languages' );
 }
+
+add_action( 'init', 'aioic_buddyforms_load_plugin_textdomain' );
+
 if ( ! function_exists( 'bfe_fs' ) ) {
 	// Create a helper function for easy SDK access.
 	function bfe_fs() {
@@ -49,27 +54,27 @@ if ( ! function_exists( 'bfe_fs' ) ) {
 			}
 
 			$bfe_fs = fs_dynamic_init( array(
-				'id'                  => '3325',
-				'slug'                => 'all-in-one-invite-codes-buddyforms',
-				'premium_slug'        => 'buddyforms-form-element-premium',
-				'type'                => 'plugin',
-				'public_key'          => 'pk_2e932fa681295bbf58137fa222313',
-				'is_premium'          => true,
-				'is_premium_only'     => true,
-				'has_paid_plans'      => true,
-				'is_org_compliant'    => false,
-				'trial'               => array(
+				'id'               => '3325',
+				'slug'             => 'all-in-one-invite-codes-buddyforms',
+				'premium_slug'     => 'buddyforms-form-element-premium',
+				'type'             => 'plugin',
+				'public_key'       => 'pk_2e932fa681295bbf58137fa222313',
+				'is_premium'       => true,
+				'is_premium_only'  => true,
+				'has_paid_plans'   => true,
+				'is_org_compliant' => false,
+				'trial'            => array(
 					'days'               => 7,
 					'is_require_payment' => true,
 				),
-				'parent'              => array(
+				'parent'           => array(
 					'id'         => '3322',
 					'slug'       => 'all-in-one-invite-codes',
 					'public_key' => 'pk_955be38b0c4d2a2914a9f4bc98355',
 					'name'       => 'All in One Invite Codes',
 				),
-				'menu'                => array(
-					'support'        => false,
+				'menu'             => array(
+					'support' => false,
 				)
 			) );
 		}
@@ -116,7 +121,7 @@ function bfe_fs_init() {
 if ( bfe_fs_is_parent_active_and_loaded() ) {
 	// If parent already included, init add-on.
 	bfe_fs_init();
-} else if ( bfe_fs_is_parent_active() ) {
+} elseif ( bfe_fs_is_parent_active() ) {
 	// Init add-on only after the parent is loaded.
 	add_action( 'all_in_one_invite_codes_core_fs_loaded', 'bfe_fs_init' );
 } else {
@@ -138,7 +143,7 @@ function all_in_one_invite_codes_buddyforms_create_new_form_builder_form_element
 
 			unset( $form_fields );
 
-			$name                           = isset( $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['name'] ) ? $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['name'] : __('Invite Codes','all-in-one-invite-codes-buddyforms');
+			$name                           = isset( $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['name'] ) ? $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['name'] : __( 'Invite Codes', 'all-in-one-invite-codes-buddyforms' );
 			$form_fields['general']['name'] = new Element_Textbox( '<b>' . __( 'Name', 'all-in-one-invite-codes-buddyforms' ) . '</b>', "buddyforms_options[form_fields][" . $field_id . "][name]", array( 'value' => $name ) );
 
 			$form_fields['general']['slug'] = new Element_Hidden( "buddyforms_options[form_fields][" . $field_id . "][slug]", 'invite_codes' );
@@ -213,13 +218,13 @@ function all_in_one_invite_codes_buddyforms_server_validation( $valid, $form_slu
 	$form_field = buddyforms_get_form_field_by_slug( $form_slug, 'invite_codes' );
 	if ( $form_field ) {
 
-		$result = all_in_one_invite_codes_validate_code( $_POST[ $form_field['slug'] ], $_POST[ $form_field['user_mail'] ] ,'register');
+		$result = all_in_one_invite_codes_validate_code( $_POST[ $form_field['slug'] ], $_POST[ $form_field['user_mail'] ], 'register' );
 
 		if ( isset( $result['error'] ) ) {
 
 			//Form::setError( 'buddyforms_form_' . $form_slug, $result['error'], $form_field['name'] );
-            $global_error = ErrorHandler::get_instance();
-            $global_error->add_error( new BuddyForms_Error( 'buddyforms_form_' . $form_slug, $result['error'], 'invite_codes', $form_slug ) );
+			$global_error = ErrorHandler::get_instance();
+			$global_error->add_error( new BuddyForms_Error( 'buddyforms_form_' . $form_slug, $result['error'], 'invite_codes', $form_slug ) );
 
 			return false;
 		}

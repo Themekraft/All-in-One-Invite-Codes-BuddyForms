@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bundle name="All in One Invite Codes BuddyForms">
+  <domain name="all-in-one-invite-codes-buddyforms">
+    <project name="All in One Invite Codes BuddyForms" slug="all-in-one-invite-codes-buddyforms">
+      <source>
+        <directory>.</directory>
+      </source>
+      <target>
+        <directory>languages</directory>
+      </target>
+      <template>
+        <file>languages/all-in-one-invite-codes-buddyforms.pot</file>
+      </template>
+    </project>
+  </domain>
+</bundle>
