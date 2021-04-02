@@ -146,7 +146,7 @@ function all_in_one_invite_codes_buddyforms_create_new_form_builder_form_element
 			$name                           = isset( $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['name'] ) ? $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['name'] : __( 'Invite Codes', 'all-in-one-invite-codes-buddyforms' );
 			$form_fields['general']['name'] = new Element_Textbox( '<b>' . __( 'Name', 'all-in-one-invite-codes-buddyforms' ) . '</b>', "buddyforms_options[form_fields][" . $field_id . "][name]", array( 'value' => $name ) );
 
-			$form_fields['general']['slug'] = new Element_Hidden( "buddyforms_options[form_fields][" . $field_id . "][slug]", 'invite_codes' );
+			$form_fields['general']['slug'] = new Element_Hidden( "buddyforms_options[form_fields][" . $field_id . "][slug]", 'tk_invite_code' );
 			$form_fields['general']['type'] = new Element_Hidden( "buddyforms_options[form_fields][" . $field_id . "][type]", $field_type );
 
 			break;
@@ -180,7 +180,9 @@ function all_in_one_invite_codes_buddyforms_create_frontend_form_element( $form,
 	switch ( $customfield['type'] ) {
 		case 'invite_codes':
 			//$form->addElement( new Element_Hidden( $customfield['slug'], $customfield['invite_codes'] ) );
-			$form->addElement( new Element_Textbox( $customfield['name'], $customfield['slug'] ) );
+            $tk_invite_code = ( ! empty( $_GET['invite_code'] ) ) ? sanitize_key( trim( $_GET['invite_code'] ) ) : '';
+
+			$form->addElement( new Element_Textbox( $customfield['name'], $customfield['slug'], array('value'=>$tk_invite_code) ) );
 			break;
 	}
 
