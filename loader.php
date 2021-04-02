@@ -218,7 +218,7 @@ function all_in_one_invite_codes_buddyforms_server_validation( $valid, $form_slu
 	$form_field = buddyforms_get_form_field_by_slug( $form_slug, 'invite_codes' );
 	if ( $form_field ) {
 
-		$result = all_in_one_invite_codes_validate_code( $_POST[ $form_field['slug'] ], $_POST[ $form_field['user_mail'] ], 'register' );
+		$result = all_in_one_invite_codes_validate_code( $_POST[ $form_field['slug'] ], $_POST[ 'user_email' ], 'register' );
 
 		if ( isset( $result['error'] ) ) {
 
