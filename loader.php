@@ -153,11 +153,31 @@ function all_in_one_invite_codes_buddyforms_create_new_form_builder_form_element
                 'value' => $required,
                 'id'    => "buddyforms_options[form_fields][" . $field_id . "][required]"
             ) );
+			if(affiliate_wp_is_active()){
+				$activate_affiliate_integration                             = isset( $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['activate'] ) ? $buddyforms[ $form_slug ]['form_fields'][ $field_id ]['activate'] : 'false';
+				$form_fields['affiliate']['activate'] = new Element_Checkbox( '<b>' . __( 'Affiliate Wp', 'buddyforms' ) . '</b>', "buddyforms_options[form_fields][" . $field_id . "][activate]", array( 'activate' => '<b>' . __( 'This Form will include the information of the Affiliate ID', 'buddyforms' ) . '</b>' ), array(
+					'value' => $activate_affiliate_integration,
+					'id'    => "buddyforms_options[form_fields][" . $field_id . "][activate]",
+					'hidden'=>true
+				) );
+			}
+			
 			break;
 
 	}
 
 	return $form_fields;
+}
+
+function affiliate_wp_is_active() {
+	$active_plugins_basenames = get_option( 'active_plugins' );
+	foreach ( $active_plugins_basenames as $plugin_basename ) {
+		if ( 0 === strpos( $plugin_basename, 'affiliate-wp/' )) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 
@@ -190,6 +210,18 @@ function all_in_one_invite_codes_buddyforms_create_frontend_form_element( $form,
                 $params['required']  = $customfield['required'];
             }
 			$form->addElement( new Element_Textbox( $customfield['name'], $customfield['slug'], $params) );
+
+			if(affiliate_wp_is_active()){
+				
+				
+			$checkbox_affiliate =	new Element_Checkbox( '<b>' . __( '', 'buddyforms' ) . '</b>', "buddyforms_options[form_fields][" . $field_id . "][activate]", array( 'activate' => '<b>' . __( '', 'buddyforms' ) . '</b>' ), array(
+					'value' => 'activate',
+					'id'    => "buddyforms_options[form_fields][" . $field_id . "][activate]",
+					'hidden'=>true
+				) );
+
+				$form->addElement($checkbox_affiliate);
+			}
 			break;
 	}
 
@@ -219,7 +251,57 @@ function all_in_one_invite_codes_buddyforms_members_add_form_element_to_select( 
 
 
 add_filter( 'buddyforms_form_custom_validation', 'all_in_one_invite_codes_buddyforms_server_validation', 2, 2 );
+add_filter( 'buddyforms_after_save_post_redirect','all_in_one_invite_codes_buddyforms_affiliate_redirect',999,1 );
 
+function all_in_one_invite_codes_buddyforms_affiliate_redirect($permalink){
+
+	if(affiliate_wp_is_active()){
+	$tk_invite_code = sanitize_key( trim( $_POST['tk_invite_code'] ) );
+	$args = array(
+
+		'posts_per_page' => - 1,
+		'post_type'      => 'tk_invite_codes', //you can use also 'any'
+		'orderby' => 'post_author',
+		'order' => 'ASC'
+	);
+	$the_query = new WP_Query( $args );
+	if ( $the_query->have_posts() ) {
+
+		while ( $the_query->have_posts() ) : $the_query->the_post();
+			$all_in_one_invite_code = get_post_meta( get_the_ID(), 'tk_all_in_one_invite_code', true );
+			
+
+
+			if ( $tk_invite_code == $all_in_one_invite_code ) {
+				$author_id =  (int)$the_query->post->post_author;
+				break;		
+			}
+
+
+
+
+		endwhile;
+	}
+
+	$buddypress_active = false;
+        if(function_exists('bp_is_active')){
+            $buddypress_active = true;
+        }
+	$affiliate_id = affwp_get_affiliate_id($author_id);
+	if ($buddypress_active || !all_in_one_invite_codes_is_default_registration() ){
+		$invite_link = wp_registration_url() . '?ref='.$affiliate_id.'&invite_code=' . $tk_invite_code . '';
+	}
+	else{
+		$invite_link = wp_registration_url() . '&invite_code=' . $tk_invite_code . '';
+	}
+
+	return $invite_link;
+
+	}
+
+	return $permalink;
+
+}
 
 function all_in_one_invite_codes_buddyforms_server_validation( $valid, $form_slug ) {
 	global $buddyforms;
