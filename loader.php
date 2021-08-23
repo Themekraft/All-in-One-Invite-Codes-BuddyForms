@@ -217,7 +217,7 @@ function all_in_one_invite_codes_buddyforms_create_frontend_form_element( $form,
 			$checkbox_affiliate =	new Element_Checkbox( '<b>' . __( '', 'buddyforms' ) . '</b>', "buddyforms_options[form_fields][" . $field_id . "][activate]", array( 'activate' => '<b>' . __( '', 'buddyforms' ) . '</b>' ), array(
 					'value' => 'activate',
 					'id'    => "buddyforms_options[form_fields][" . $field_id . "][activate]",
-					'hidden'=>true
+					'style'=>"display:none"
 				) );
 
 				$form->addElement($checkbox_affiliate);
